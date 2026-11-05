@@ -1,0 +1,18 @@
+{
+	"id": "crazygames",
+	"name": "CrazyGames",
+	"version": "1.0.0",
+	"description": "Publish a web game on CrazyGames: its ads, game events, invite links and player through Gobu's Services, the player's mute setting followed by itself, and the CrazyGames singleton for what only CrazyGames has (happy time, the completion, its sign-in prompt).",
+	"author": "Gobu",
+	"category": "Services",
+	"icon": "icon.svg",
+	"api_version": 4,
+	"entry": "gobu_plugin_init",
+	"libraries": {
+		"windows.x86_64": "bin/crazygames.windows.x86_64.dll",
+		"web.wasm32": "bin/libcrazygames.web.wasm32.wasm"
+	},
+	"web_head": [
+		"<script src=\"https://sdk.crazygames.com/crazygames-sdk-v3.js\"></script>"
+	]
+}

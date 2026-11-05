@@ -1,0 +1,20 @@
+# The CrazyGames plugin's library: it has nothing of Gobu but gobu_plugin.h, so it is a library of its own, never part
+# of Gobu's "*" (Gobu loads it only in a project that enabled the plugin).
+module PluginCrazyGames {
+	standalone = true
+	link_objects = true # Into the library itself: nothing of it would be taken from an archive.
+	sources = ["*.cpp"]
+}
+
+# The plugin's folder (../poki: plugin.json, the libraries, the class reference) among the plugins that come with
+# Gobu, next to the editor: Engine/Binaries/plugins/poki.
+module PluginCrazyGamesBundle {
+	standalone = true
+	generate {
+		copy "../crazygames/plugin.json" "out=//Engine/Binaries/plugins/crazygames/plugin.json"
+		copy "../crazygames/icon.svg" "out=//Engine/Binaries/plugins/crazygames/icon.svg"
+		copy "../crazygames/doc_classes/CrazyGames.xml" "out=//Engine/Binaries/plugins/crazygames/doc_classes/CrazyGames.xml"
+		copy "../crazygames/bin/crazygames.windows.x86_64.dll" "out=//Engine/Binaries/plugins/crazygames/bin/crazygames.windows.x86_64.dll"
+		copy "../crazygames/bin/libcrazygames.web.wasm32.wasm" "out=//Engine/Binaries/plugins/crazygames/bin/libcrazygames.web.wasm32.wasm"
+	}
+}

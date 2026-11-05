@@ -1,0 +1,25 @@
+# The runner (run_tests.py) reads the "CG_TEST" lines in the browser's console, and what the fake CrazyGames SDK
+# was asked ("CG_SDK"), in order.
+async fn _ready() {
+	print("CG_TEST provider=", Services.get_provider_name())
+	Services.gameplay_start()
+	shown : bool = await Services.commercial_break()
+	# The fake SDK turns the player's mute setting on after this ad: the game is muted then.
+	print("CG_TEST commercial=", shown, " muted=", Audio.is_bus_mute(0))
+	rewarded : bool = await Services.rewarded_break()
+	print("CG_TEST rewarded=", rewarded)
+	url : String = await Services.shareable_url({"room": "r42"})
+	print("CG_TEST url=", url)
+	print("CG_TEST param=", Services.get_url_param("room"))
+	CrazyGames.happytime()
+	CrazyGames.report_game_completed(50)
+	print("CG_TEST ready=", CrazyGames.is_ready(), " env=", CrazyGames.get_environment(), " player=", Services.get_player_name())
+	# CrazyGames's sign-in through the Authentication plugin: its token is "crazygames:<CrazyGames's>".
+	if Meta.class_exists("Authentication") and CrazyGames.is_ready() {
+		Authentication.sign_in_with("crazygames")
+		signed : Array = await Authentication.signed_in
+		session : Dictionary = signed[1] as Dictionary ?? {}
+		print("CG_TEST signed_in=", signed[0], " username=", session.get("username", ""))
+	}
+	print("CG_TEST done")
+}

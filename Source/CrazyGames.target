@@ -1,0 +1,28 @@
+# The CrazyGames plugin (Gobu reads this folder through Engine/Source/external_plugins.txt): `forja build PluginCrazyGames`
+# builds its libraries into ../crazygames/bin and puts the plugin among the ones that come with Gobu.
+target PluginCrazyGames {
+	modules = [PluginCrazyGamesBundle]
+	requires = [PluginCrazyGames_windows, PluginCrazyGames_web]
+}
+
+# Windows: a DLL, so the editor knows the `CrazyGames` singleton (it does nothing there; Services plays its test ads).
+target PluginCrazyGames_windows {
+	type = shared
+	modules = [PluginCrazyGames]
+	binary = crazygames.windows.x86_64
+	binaries_dir = "../Plugins/CrazyGames/crazygames/bin"
+	options { plugin = true }
+}
+
+# The web: a WebAssembly side module, for the templates without threads (as Authentication and Colyseus).
+target PluginCrazyGames_web {
+	platform = web
+	modules = [PluginCrazyGames]
+	binary = libcrazygames.web.wasm32.wasm
+	binaries_dir = "../Plugins/CrazyGames/crazygames/bin"
+	options {
+		plugin = true
+		no_threads = true
+	}
+	link_flags = ["-sSIDE_MODULE=2", "-fvisibility=hidden"]
+}

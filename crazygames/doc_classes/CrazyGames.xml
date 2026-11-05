@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="CrazyGames" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<brief_description>
+		What only CrazyGames has (happy time, the completion, its sign-in prompt); its ads and game events go through [Services].
+	</brief_description>
+	<description>
+		The CrazyGames plugin puts a web game on CrazyGames (crazygames.com). Its SDK is loaded by the exported page (the plugin's [code]web_head[/code]), and the plugin is the [code]crazygames[/code] provider of [Services]: the game asks for its ads, game events, invite links and player there, the same calls as with any other service.
+		[codeblock]
+		async fn on_revive_pressed() {
+			# CrazyGames's rewarded ad, through Services.
+			if await Services.rewarded_break() {
+				print("Revived")
+			}
+		}
+		[/codeblock]
+		[Services] sends the game events by itself ([code]loadingStop[/code] when the main scene is ready, [code]gameplayStart[/code] at the player's first input, stop and start around pauses and ads), and mutes the game, ignores its input and pauses it during an ad. The plugin also follows the player's mute setting on CrazyGames ([code]muteAudio[/code]), over the game's own sound. [method Services.shareable_url] is CrazyGames's invite link, and [method Services.get_url_param] reads its parameters.
+		The SDK works on CrazyGames and on localhost (with test ads); on any other site it is [code]disabled[/code] and nothing happens. Outside a web game (the editor, a desktop build) the singleton is there and does nothing, and [Services] plays its test ads instead.
+	</description>
+	<tutorials>
+		<link title="Game services">https://gobuengine.org/guide/15-services</link>
+	</tutorials>
+	<methods>
+		<method name="get_environment">
+			<return type="String" />
+			<description>
+				Where the SDK runs: [code]"crazygames"[/code], [code]"local"[/code] (localhost: test ads), [code]"disabled"[/code] (another site: nothing works), or empty without the SDK.
+			</description>
+		</method>
+		<method name="happytime">
+			<return type="void" />
+			<description>
+				A moment of joy (a level beaten, a record): CrazyGames celebrates it with the player. Use it sparingly.
+			</description>
+		</method>
+		<method name="is_ad_blocked">
+			<return type="bool" />
+			<description>
+				Whether the browser blocks ads. The game must work anyway: [method Services.commercial_break] ends at once.
+			</description>
+		</method>
+		<method name="is_ready">
+			<return type="bool" />
+			<description>
+				Whether the SDK loaded and started on CrazyGames or on localhost.
+			</description>
+		</method>
+		<method name="report_game_completed">
+			<return type="void" />
+			<param index="0" name="percent" type="int" />
+			<description>
+				How much of the game the player has done, from 0 to 100.
+			</description>
+		</method>
+		<method name="show_auth_prompt">
+			<return type="void" />
+			<description>
+				Opens CrazyGames's sign-in, when the player presses a button. The player comes through [method Services.get_player_name] and the signal [signal Services.player_changed].
+			</description>
+		</method>
+	</methods>
+</class>
